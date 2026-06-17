@@ -5,30 +5,41 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import pai.suhas.ecommerce_backend.security.JwtService;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-
-    public AuthController(AuthenticationManager authenticationManager)
+    private final JwtService jwtService;
+    public AuthController(AuthenticationManager authenticationManager, JwtService jwtService)
     {
         this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest loginRequest)
     {
+        try
+        {
+            Authentication authentication =
+                    authenticationManager.authenticate(
+                            new UsernamePasswordAuthenticationToken(
+                                    loginRequest.getEmail(),
+                                    loginRequest.getPassword()
+                            )
+                    );
 
-        Authentication authentication =
-                authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(
-                                loginRequest.getEmail(),
-                                loginRequest.getPassword()
-                        )
-                );
+            String token = jwtService.generateToken(loginRequest.getEmail());
 
-        return "Login Successful";
+            return token;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

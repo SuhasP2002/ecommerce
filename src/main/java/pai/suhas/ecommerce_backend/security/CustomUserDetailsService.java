@@ -1,6 +1,5 @@
 package pai.suhas.ecommerce_backend.security;
-
-import org.springframework.security.core.userdetails.User;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,7 +9,7 @@ import pai.suhas.ecommerce_backend.repository.UserRepository;
 @Service
 public class CustomUserDetailsService implements UserDetailsService
 {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public CustomUserDetailsService(UserRepository userRepository)
     {
@@ -18,8 +17,8 @@ public class CustomUserDetailsService implements UserDetailsService
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) {
-
+    public UserDetails loadUserByUsername(@NonNull String username) {
+        System.out.println("Loading user: " + username);
         pai.suhas.ecommerce_backend.entity.User user = userRepository.findByEmail(username)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found"));
