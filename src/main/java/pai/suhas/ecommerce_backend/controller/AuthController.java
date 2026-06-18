@@ -1,19 +1,22 @@
 package pai.suhas.ecommerce_backend.controller;
 
 import pai.suhas.ecommerce_backend.dto.LoginRequest;
+import pai.suhas.ecommerce_backend.security.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import pai.suhas.ecommerce_backend.security.JwtService;
 
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
-
+public class AuthController
+{
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    public AuthController(AuthenticationManager authenticationManager, JwtService jwtService)
+
+    public AuthController(
+            AuthenticationManager authenticationManager,
+            JwtService jwtService)
     {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
@@ -22,24 +25,11 @@ public class AuthController {
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest loginRequest)
     {
-        try
-        {
-            Authentication authentication =
-                    authenticationManager.authenticate(
-                            new UsernamePasswordAuthenticationToken(
-                                    loginRequest.getEmail(),
-                                    loginRequest.getPassword()
-                            )
-                    );
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword()));
 
-            String token = jwtService.generateToken(loginRequest.getEmail());
+        String token = jwtService.generateToken(loginRequest.getEmail());
 
-            return token;
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            throw e;
-        }
+        return token;
     }
 }
