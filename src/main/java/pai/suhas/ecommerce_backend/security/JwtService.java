@@ -21,9 +21,7 @@ public class JwtService
 
     private SecretKey getSigningKey()
     {
-        return Keys.hmacShaKeyFor(
-                secretKey.getBytes(StandardCharsets.UTF_8)
-        );
+        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
     public String generateToken(String email)
@@ -31,9 +29,7 @@ public class JwtService
         return Jwts.builder()
                 .subject(email)
                 .issuedAt(new Date())
-                .expiration(
-                        new Date(System.currentTimeMillis() + expiration)
-                )
+                .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey())
                 .compact();
     }
