@@ -1,6 +1,7 @@
 package pai.suhas.ecommerce_backend.service;
 
 import org.springframework.stereotype.Service;
+import pai.suhas.ecommerce_backend.exception.ProductNotFoundException;
 import pai.suhas.ecommerce_backend.dto.CreateProductRequest;
 import pai.suhas.ecommerce_backend.entity.Product;
 import pai.suhas.ecommerce_backend.repository.ProductRepository;
@@ -39,13 +40,13 @@ public class ProductService
     {
         return productRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Product not found"));
+                        new ProductNotFoundException("Product not found " + id));
     }
     public Product updateProduct(Long id, CreateProductRequest createProductRequest)
     {
         Product product = productRepository.findById(id)
                 .orElseThrow(()->
-                        new RuntimeException("Product not found"));
+                        new ProductNotFoundException("Product not found " + id));
 
         product.setName(createProductRequest.getName());
         product.setPrice(createProductRequest.getPrice());
@@ -59,7 +60,7 @@ public class ProductService
     {
         Product product = productRepository.findById(id)
                 .orElseThrow(()->
-                        new RuntimeException("Product not found"));
+                        new ProductNotFoundException("Product not found " + id));
         productRepository.delete(product);
     }
 }
