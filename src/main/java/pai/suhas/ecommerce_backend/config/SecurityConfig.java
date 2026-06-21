@@ -29,23 +29,18 @@ public class SecurityConfig
                 .csrf(csrf -> csrf.disable())
 
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS
-                        )
-                )
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/users",
-                                "/auth/login"
-                        ).permitAll()
-                        .anyRequest().authenticated()
-                )
+                                "/auth/login",
+                                "/products",
+                                "/products/**",
+                                "/error"
+                        ).permitAll().anyRequest().authenticated())
 
-                .addFilterBefore(
-                        jwtFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                );
+                .addFilterBefore(jwtFilter,UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
