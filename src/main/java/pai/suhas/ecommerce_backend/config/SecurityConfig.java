@@ -37,7 +37,7 @@ public class SecurityConfig
                                 "/auth/login",
                                 "/products",
                                 "/products/**",
-                                "/error"
+                                "/error", "/cart","/cart/**"
                         ).permitAll().anyRequest().authenticated())
 
                 .addFilterBefore(jwtFilter,UsernamePasswordAuthenticationFilter.class);
