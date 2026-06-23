@@ -3,6 +3,7 @@ package pai.suhas.ecommerce_backend.controller;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import pai.suhas.ecommerce_backend.dto.CreateProductRequest;
+import pai.suhas.ecommerce_backend.dto.ProductResponse;
 import pai.suhas.ecommerce_backend.entity.Product;
 import pai.suhas.ecommerce_backend.service.ProductService;
 
@@ -26,13 +27,13 @@ public class ProductController
     }
 
     @GetMapping
-    public List<Product> getAllProducts()
+    public List<ProductResponse> getAllProducts()
     {
         return productService.getAllProduct();
     }
 
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable Long id)
+    public ProductResponse getProductById(@PathVariable Long id)
     {
         return productService.getProductById(id);
     }

@@ -1,6 +1,7 @@
 package pai.suhas.ecommerce_backend.service;
 
 import org.springframework.stereotype.Service;
+import pai.suhas.ecommerce_backend.dto.ProductResponse;
 import pai.suhas.ecommerce_backend.exception.ProductNotFoundException;
 import pai.suhas.ecommerce_backend.dto.CreateProductRequest;
 import pai.suhas.ecommerce_backend.entity.Product;
@@ -31,16 +32,20 @@ public class ProductService
         return productRepository.save(product);
     }
 
-    public List<Product> getAllProduct()
+    public List<ProductResponse> getAllProduct()
     {
-        return productRepository.findAll();
+        List<Product> products = productRepository.findAll();
+        return products.stream()
+                .map(this::mapToProductResponse).toList();
     }
 
-    public Product getProductById(Long id)
+    public ProductResponse getProductById(Long id)
     {
-        return productRepository.findById(id)
+        Product product = productRepository.findById(id)
                 .orElseThrow(() ->
                         new ProductNotFoundException("Product not found " + id));
+
+        return mapToProductResponse(product);
     }
     public Product updateProduct(Long id, CreateProductRequest createProductRequest)
     {
@@ -62,5 +67,19 @@ public class ProductService
                 .orElseThrow(()->
                         new ProductNotFoundException("Product not found " + id));
         productRepository.delete(product);
+    }
+
+    private ProductResponse mapToProductResponse(Product product)
+    {
+        ProductResponse response = new ProductResponse();
+
+        response.setId(product.getId());
+        response.setName(product.getName());
+        response.setPrice(product.getPrice());
+        response.setDescription(product.getDescription());
+        response.setImageUrl(product.getImageUrl());
+        response.setStockQuantity(product.getStockQuantity());
+
+        return response;
     }
 }
