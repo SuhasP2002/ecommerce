@@ -30,6 +30,16 @@ public class GlobalExceptionHandler
         return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<Map<String, String>>handleInsufficientStock(InsufficientStockException ex)
+    {
+        Map<String, String> error = new HashMap<>();
+
+        error.put("message", ex.getMessage());
+
+        return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(CartEmptyException.class)
     public ResponseEntity<Map<String,String>>handleCartEmpty(CartEmptyException ex)
     {

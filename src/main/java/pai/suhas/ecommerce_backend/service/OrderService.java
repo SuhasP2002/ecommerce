@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import pai.suhas.ecommerce_backend.dto.OrderResponse;
 import pai.suhas.ecommerce_backend.entity.*;
 import pai.suhas.ecommerce_backend.exception.CartEmptyException;
+import pai.suhas.ecommerce_backend.exception.InsufficientStockException;
 import pai.suhas.ecommerce_backend.repository.*;
 
 import java.time.LocalDateTime;
@@ -16,17 +17,18 @@ public class OrderService
     private final OrderItemRepository orderItemRepository;
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
-
+    private final ProductRepository productRepository;
     public OrderService(
             OrderRepository orderRepository,
             OrderItemRepository orderItemRepository,
             CartRepository cartRepository,
-            UserRepository userRepository)
+            UserRepository userRepository, ProductRepository productRepository)
     {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
         this.cartRepository = cartRepository;
         this.userRepository = userRepository;
+        this.productRepository = productRepository;
     }
 
     public OrderResponse placeOrder()
@@ -47,15 +49,13 @@ public class OrderService
 
         order.setUser(user);
         order.setOrderDate(LocalDateTime.now());
-        order.setStatus("PLACED");
+        order.setStatus(OrderStatus.PLACED);
 
         double totalAmount = 0;
 
         for (Cart cart : cartItems)
         {
-            totalAmount +=
-                    cart.getQuantity() *
-                            cart.getProduct().getPrice();
+            totalAmount += cart.getQuantity() * cart.getProduct().getPrice();
         }
 
         order.setTotalAmount(totalAmount);
@@ -69,10 +69,17 @@ public class OrderService
             orderItem.setOrder(savedOrder);
             orderItem.setProduct(cart.getProduct());
             orderItem.setQuantity(cart.getQuantity());
-            orderItem.setPrice(
-                    cart.getProduct().getPrice());
+            orderItem.setPrice(cart.getProduct().getPrice());
 
             orderItemRepository.save(orderItem);
+
+            Product product = cart.getProduct();
+            if(cart.getQuantity() > product.getStockQuantity())
+            {
+                throw new InsufficientStockException("Not enough stock available for " + product.getName());
+            }
+            product.setStockQuantity((product.getStockQuantity())-cart.getQuantity());
+            productRepository.save(product);
         }
 
         cartRepository.deleteAll(cartItems);
@@ -99,7 +106,7 @@ public class OrderService
 
         response.setId(order.getId());
         response.setTotalAmount(order.getTotalAmount());
-        response.setStatus(order.getStatus());
+        response.setStatus(order.getStatus().name());
         response.setOrderDate(order.getOrderDate());
 
         return response;

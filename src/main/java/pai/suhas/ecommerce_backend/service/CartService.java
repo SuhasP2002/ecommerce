@@ -5,6 +5,7 @@ import pai.suhas.ecommerce_backend.dto.AddToCartRequest;
 import pai.suhas.ecommerce_backend.entity.Cart;
 import pai.suhas.ecommerce_backend.entity.Product;
 import pai.suhas.ecommerce_backend.entity.User;
+import pai.suhas.ecommerce_backend.exception.InsufficientStockException;
 import pai.suhas.ecommerce_backend.exception.ProductNotFoundException;
 import pai.suhas.ecommerce_backend.repository.CartRepository;
 import pai.suhas.ecommerce_backend.repository.ProductRepository;
@@ -33,6 +34,11 @@ public class CartService
                 .orElseThrow(() ->
                         new ProductNotFoundException("Product not found " + request.getProductId()));
 
+        if(request.getQuantity() > product.getStockQuantity())
+        {
+            throw new InsufficientStockException(
+                    "Not enough stock available");
+        }
         // Temporary hardcoded user
         // Later we will get this from JWT
         User user = userRepository.findByEmail("suhas@gmail.com")
