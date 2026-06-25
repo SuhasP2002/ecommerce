@@ -1,5 +1,9 @@
 package pai.suhas.ecommerce_backend.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pai.suhas.ecommerce_backend.dto.ProductResponse;
 import pai.suhas.ecommerce_backend.exception.ProductNotFoundException;
@@ -32,11 +36,15 @@ public class ProductService
         return productRepository.save(product);
     }
 
-    public List<ProductResponse> getAllProduct()
+    public Page<ProductResponse> getAllProduct(int page,int size,String sortBy,String direction)
     {
-        List<Product> products = productRepository.findAll();
-        return products.stream()
-                .map(this::mapToProductResponse).toList();
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page,size,sort);
+        Page<Product> products = productRepository.findAll(pageable);
+        return products.map(this::mapToProductResponse);
     }
 
     public ProductResponse getProductById(Long id)
@@ -81,5 +89,13 @@ public class ProductService
         response.setStockQuantity(product.getStockQuantity());
 
         return response;
+    }
+    public List<ProductResponse> searchProducts(String keyword)
+    {
+        List<Product> products = productRepository.findByNameContainingIgnoreCase(keyword);
+
+        return products.stream()
+                .map(this::mapToProductResponse)
+                .toList();
     }
 }

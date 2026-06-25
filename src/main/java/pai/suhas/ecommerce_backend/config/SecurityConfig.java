@@ -37,8 +37,18 @@ public class SecurityConfig
                                 "/auth/login",
                                 "/products",
                                 "/products/**",
-                                "/error", "/cart","/cart/**","/orders"
-                        ).permitAll().anyRequest().authenticated())
+                                "/error",
+                                "/cart",
+                                "/cart/**",
+                                "/orders",
+                                "/orders/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
+                        )
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated()
+                )
 
                 .addFilterBefore(jwtFilter,UsernamePasswordAuthenticationFilter.class);
 

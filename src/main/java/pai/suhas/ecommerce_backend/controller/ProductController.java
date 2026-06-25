@@ -1,6 +1,7 @@
 package pai.suhas.ecommerce_backend.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import pai.suhas.ecommerce_backend.dto.CreateProductRequest;
 import pai.suhas.ecommerce_backend.dto.ProductResponse;
@@ -27,9 +28,13 @@ public class ProductController
     }
 
     @GetMapping
-    public List<ProductResponse> getAllProducts()
+    public Page<ProductResponse> getAllProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction)
     {
-        return productService.getAllProduct();
+        return productService.getAllProduct(page,size,sortBy,direction);
     }
 
     @GetMapping("/{id}")
@@ -50,4 +55,9 @@ public class ProductController
         return "Product deleted successfully";
     }
 
+    @GetMapping("/search")
+    public List<ProductResponse> searchProducts(@RequestParam String keyword)
+    {
+        return productService.searchProducts(keyword);
+    }
 }
