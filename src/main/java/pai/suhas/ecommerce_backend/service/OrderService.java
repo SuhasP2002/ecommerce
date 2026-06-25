@@ -1,7 +1,9 @@
 package pai.suhas.ecommerce_backend.service;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pai.suhas.ecommerce_backend.dto.OrderResponse;
+import pai.suhas.ecommerce_backend.dto.UpdateOrderStatusRequest;
 import pai.suhas.ecommerce_backend.entity.*;
 import pai.suhas.ecommerce_backend.exception.CartEmptyException;
 import pai.suhas.ecommerce_backend.exception.InsufficientStockException;
@@ -34,9 +36,7 @@ public class OrderService
     public OrderResponse placeOrder()
     {
         // Temporary hardcoded user
-        User user = userRepository.findByEmail("suhas@gmail.com")
-                .orElseThrow(() ->
-                        new RuntimeException("User not found"));
+        User user = getCurrentUser();
 
         List<Cart> cartItems = cartRepository.findByUser(user);
 
@@ -71,13 +71,12 @@ public class OrderService
             orderItem.setQuantity(cart.getQuantity());
             orderItem.setPrice(cart.getProduct().getPrice());
 
-            orderItemRepository.save(orderItem);
-
             Product product = cart.getProduct();
             if(cart.getQuantity() > product.getStockQuantity())
             {
                 throw new InsufficientStockException("Not enough stock available for " + product.getName());
             }
+            orderItemRepository.save(orderItem);
             product.setStockQuantity((product.getStockQuantity())-cart.getQuantity());
             productRepository.save(product);
         }
@@ -89,9 +88,7 @@ public class OrderService
 
     public List<OrderResponse> getOrders()
     {
-        User user = userRepository.findByEmail("suhas@gmail.com")
-                .orElseThrow(() ->
-                        new RuntimeException("User not found"));
+        User user = getCurrentUser();
 
         List<Order> orders = orderRepository.findByUser(user);
 
@@ -110,5 +107,26 @@ public class OrderService
         response.setOrderDate(order.getOrderDate());
 
         return response;
+    }
+
+    public OrderResponse updateOrderStatus(Long orderId,UpdateOrderStatusRequest request)
+    {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        order.setStatus(OrderStatus.valueOf(request.getStatus()));
+        Order updatedOrder = orderRepository.save(order);
+        return mapToOrderResponse(updatedOrder);
+    }
+
+    private User getCurrentUser()
+    {
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
     }
 }

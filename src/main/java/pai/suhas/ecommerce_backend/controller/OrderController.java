@@ -2,6 +2,7 @@ package pai.suhas.ecommerce_backend.controller;
 
 import org.springframework.web.bind.annotation.*;
 import pai.suhas.ecommerce_backend.dto.OrderResponse;
+import pai.suhas.ecommerce_backend.dto.UpdateOrderStatusRequest;
 import pai.suhas.ecommerce_backend.entity.Order;
 import pai.suhas.ecommerce_backend.service.OrderService;
 
@@ -28,5 +29,11 @@ public class OrderController
     public List<OrderResponse> getOrders()
     {
         return orderService.getOrders();
+    }
+
+    @PutMapping("/{id}/status")
+    public OrderResponse updateOrderStatus(@PathVariable Long id,@RequestBody UpdateOrderStatusRequest request)
+    {
+        return orderService.updateOrderStatus(id,request);
     }
 }

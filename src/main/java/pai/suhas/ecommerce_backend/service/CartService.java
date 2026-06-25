@@ -1,5 +1,6 @@
 package pai.suhas.ecommerce_backend.service;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pai.suhas.ecommerce_backend.dto.AddToCartRequest;
 import pai.suhas.ecommerce_backend.entity.Cart;
@@ -41,9 +42,7 @@ public class CartService
         }
         // Temporary hardcoded user
         // Later we will get this from JWT
-        User user = userRepository.findByEmail("suhas@gmail.com")
-                .orElseThrow(() ->
-                        new RuntimeException("User not found"));
+        User user = getCurrentUser();
 
         Optional<Cart> existingCart = cartRepository.findByUserAndProduct(user,product);
 
@@ -65,9 +64,7 @@ public class CartService
 
     public List<Cart> getCart()
     {
-        User user = userRepository.findByEmail("suhas@gmail.com")
-                .orElseThrow(() ->
-                        new RuntimeException("User not found"));
+        User user = getCurrentUser();
 
         return cartRepository.findByUser(user);
     }
@@ -79,5 +76,16 @@ public class CartService
                         new RuntimeException("Cart item not found"));
 
         cartRepository.delete(cart);
+    }
+    private User getCurrentUser()
+    {
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
     }
 }
