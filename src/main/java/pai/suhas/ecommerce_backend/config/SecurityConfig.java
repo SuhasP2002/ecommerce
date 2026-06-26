@@ -43,7 +43,11 @@ public class SecurityConfig
                                 "/orders",
                                 "/orders/**",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**"
+                                "/v3/api-docs/**",
+                                "/orders",
+                                "/orders/**",
+                                "/categories",
+                                "/categories/**"
                         )
                         .permitAll()
                         .anyRequest()

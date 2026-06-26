@@ -18,10 +18,22 @@ public class Product
 
     private Integer stockQuantity;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     private String imageUrl;
 
     public Product()
     {
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public Long getId()
