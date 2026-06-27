@@ -119,4 +119,27 @@ public class ProductService
                 .map(this::mapToProductResponse)
                 .toList();
     }
+
+    public List<ProductResponse> filterProducts(String category,Double minPrice,Double maxPrice)
+    {
+        List<Product> products;
+
+        if (category != null && minPrice != null && maxPrice != null)
+        {
+            products = productRepository.findByCategoryAndPrice(category,minPrice,maxPrice);
+        }
+        else if (category != null)
+        {
+            products = productRepository.findByCategory_NameIgnoreCase(category);
+        }
+        else if (minPrice != null && maxPrice != null)
+        {
+            products = productRepository.findProductsByPriceRange(minPrice,maxPrice);
+        }
+        else
+        {
+            products = productRepository.findAll();
+        }
+        return products.stream().map(this::mapToProductResponse).toList();
+    }
 }
