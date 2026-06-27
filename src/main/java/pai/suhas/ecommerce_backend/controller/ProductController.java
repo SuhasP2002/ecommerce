@@ -22,7 +22,7 @@ public class ProductController
     }
 
     @PostMapping
-    public Product createProduct(@Valid @RequestBody CreateProductRequest createProductRequest)
+    public ProductResponse createProduct(@Valid @RequestBody CreateProductRequest createProductRequest)
     {
         return productService.createProduct(createProductRequest);
     }
@@ -44,7 +44,7 @@ public class ProductController
     }
 
     @PutMapping("/{id}")
-    public Product updateProduct(@PathVariable Long id, @Valid @RequestBody CreateProductRequest request)
+    public ProductResponse updateProduct(@PathVariable Long id, @Valid @RequestBody CreateProductRequest request)
     {
         return productService.updateProduct(id,request);
     }

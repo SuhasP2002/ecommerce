@@ -6,9 +6,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pai.suhas.ecommerce_backend.dto.ProductResponse;
+import pai.suhas.ecommerce_backend.entity.Category;
 import pai.suhas.ecommerce_backend.exception.ProductNotFoundException;
 import pai.suhas.ecommerce_backend.dto.CreateProductRequest;
 import pai.suhas.ecommerce_backend.entity.Product;
+import pai.suhas.ecommerce_backend.repository.CategoryRepository;
 import pai.suhas.ecommerce_backend.repository.ProductRepository;
 
 import java.util.List;
@@ -17,14 +19,20 @@ import java.util.List;
 public class ProductService
 {
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
-    public ProductService(ProductRepository productRepository)
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository)
     {
         this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
     }
 
-    public Product createProduct(CreateProductRequest request)
+    public ProductResponse createProduct(CreateProductRequest request)
     {
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() ->
+                        new RuntimeException("Category not found"));
+
         Product product = new Product();
 
         product.setName(request.getName());
@@ -33,7 +41,11 @@ public class ProductService
         product.setStockQuantity(request.getStockQuantity());
         product.setImageUrl(request.getImageUrl());
 
-        return productRepository.save(product);
+        product.setCategory(category);
+
+        Product savedProduct = productRepository.save(product);
+
+        return mapToProductResponse(savedProduct);
     }
 
     public Page<ProductResponse> getAllProduct(int page,int size,String sortBy,String direction)
@@ -55,20 +67,28 @@ public class ProductService
 
         return mapToProductResponse(product);
     }
-    public Product updateProduct(Long id, CreateProductRequest createProductRequest)
+    public ProductResponse updateProduct(Long id, CreateProductRequest createProductRequest)
     {
         Product product = productRepository.findById(id)
-                .orElseThrow(()->
+                .orElseThrow(() ->
                         new ProductNotFoundException("Product not found " + id));
+
+        Category category = categoryRepository.findById(createProductRequest.getCategoryId())
+                .orElseThrow(() ->
+                        new RuntimeException("Category not found"));
 
         product.setName(createProductRequest.getName());
         product.setPrice(createProductRequest.getPrice());
         product.setDescription(createProductRequest.getDescription());
         product.setStockQuantity(createProductRequest.getStockQuantity());
         product.setImageUrl(createProductRequest.getImageUrl());
+        product.setCategory(category);
 
-        return productRepository.save(product);
+        Product updatedProduct = productRepository.save(product);
+
+        return mapToProductResponse(updatedProduct);
     }
+
     public void deleteProduct(Long id)
     {
         Product product = productRepository.findById(id)
@@ -87,6 +107,7 @@ public class ProductService
         response.setDescription(product.getDescription());
         response.setImageUrl(product.getImageUrl());
         response.setStockQuantity(product.getStockQuantity());
+        response.setCategoryName(product.getCategory().getName());
 
         return response;
     }

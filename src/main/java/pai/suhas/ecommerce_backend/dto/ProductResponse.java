@@ -8,6 +8,15 @@ public class ProductResponse
     private String description;
     private String imageUrl;
     private Integer stockQuantity;
+    private String categoryName;
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
 
     public Long getId()
     {

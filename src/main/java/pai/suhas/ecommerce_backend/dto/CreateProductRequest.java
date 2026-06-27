@@ -24,6 +24,16 @@ public class CreateProductRequest
     @NotBlank(message = "Image URL is required")
     private String imageUrl;
 
+    private Long categoryId;
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
     public String getName()
     {
         return name;
