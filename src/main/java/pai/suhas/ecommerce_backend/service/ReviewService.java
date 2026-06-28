@@ -3,6 +3,7 @@ package pai.suhas.ecommerce_backend.service;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pai.suhas.ecommerce_backend.dto.AddReviewRequest;
+import pai.suhas.ecommerce_backend.dto.ProductRatingResponse;
 import pai.suhas.ecommerce_backend.dto.ReviewResponse;
 import pai.suhas.ecommerce_backend.entity.Product;
 import pai.suhas.ecommerce_backend.entity.Review;
@@ -101,5 +102,20 @@ public class ReviewService
 
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public ProductRatingResponse getProductRating(Long productId)
+    {
+        Double averageRating = reviewRepository.getAverageRating(productId);
+        Long totalReviews = reviewRepository.getReviewCount(productId);
+
+        ProductRatingResponse response = new ProductRatingResponse();
+
+        response.setAverageRating(
+                averageRating == null ? 0.0 : averageRating);
+
+        response.setTotalReviews(totalReviews);
+
+        return response;
     }
 }

@@ -2,6 +2,7 @@ package pai.suhas.ecommerce_backend.controller;
 
 import org.springframework.web.bind.annotation.*;
 import pai.suhas.ecommerce_backend.dto.AddReviewRequest;
+import pai.suhas.ecommerce_backend.dto.ProductRatingResponse;
 import pai.suhas.ecommerce_backend.dto.ReviewResponse;
 import pai.suhas.ecommerce_backend.service.ReviewService;
 
@@ -34,5 +35,12 @@ public class ReviewController
     public void deleteReview(@PathVariable Long reviewId)
     {
         reviewService.deleteReview(reviewId);
+    }
+
+    @GetMapping("/product/{productId}/rating")
+    public ProductRatingResponse getProductRating(
+            @PathVariable Long productId)
+    {
+        return reviewService.getProductRating(productId);
     }
 }
