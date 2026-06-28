@@ -47,7 +47,9 @@ public class SecurityConfig
                                 "/orders",
                                 "/orders/**",
                                 "/categories",
-                                "/categories/**"
+                                "/categories/**",
+                                "/wishlist",
+                                "/wishlist/**"
                         )
                         .permitAll()
                         .anyRequest()
