@@ -1,10 +1,13 @@
 package pai.suhas.ecommerce_backend.security;
 import org.jspecify.annotations.NonNull;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pai.suhas.ecommerce_backend.repository.UserRepository;
+
+import java.util.List;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService
@@ -23,10 +26,10 @@ public class CustomUserDetailsService implements UserDetailsService
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found"));
 
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getEmail())
-                .password(user.getPassword())
-                .roles(user.getRole().name())
-                .build();
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole()))
+        );
     }
 }

@@ -49,6 +49,8 @@ public class OrderService
 
         order.setUser(user);
         order.setOrderDate(LocalDateTime.now());
+        order.setPaymentStatus(PaymentStatus.PENDING);
+
         order.setStatus(OrderStatus.PLACED);
 
         double totalAmount = 0;
@@ -109,6 +111,17 @@ public class OrderService
         return response;
     }
 
+    public Order getOrderByRazorpayOrderId(String razorpayOrderId)
+    {
+        return orderRepository.findByRazorpayOrderId(razorpayOrderId)
+                .orElseThrow(() ->
+                        new RuntimeException("Order not found"));
+    }
+
+    public Order saveOrder(Order order)
+    {
+        return orderRepository.save(order);
+    }
     public OrderResponse updateOrderStatus(Long orderId,UpdateOrderStatusRequest request)
     {
         Order order = orderRepository.findById(orderId)
@@ -128,5 +141,21 @@ public class OrderService
         return userRepository.findByEmail(email)
                 .orElseThrow(() ->
                         new RuntimeException("User not found"));
+    }
+
+    public Order getOrderById(Long id)
+    {
+        return orderRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Order not found"));
+    }
+
+    public void markOrderAsPaid(Long orderId)
+    {
+        Order order = getOrderById(orderId);
+
+        order.setPaymentStatus(PaymentStatus.PAID);
+
+        orderRepository.save(order);
     }
 }

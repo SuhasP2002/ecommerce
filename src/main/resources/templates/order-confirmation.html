@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Confirmation</title>
+
+    <style>
+
+        body{
+            font-family:Arial,sans-serif;
+            background:#f4f4f4;
+            margin:0;
+            padding:40px;
+        }
+
+        .container{
+            max-width:650px;
+            margin:auto;
+            background:white;
+            border-radius:12px;
+            overflow:hidden;
+            box-shadow:0 3px 15px rgba(0,0,0,.1);
+        }
+
+        .header{
+            background:#4CAF50;
+            color:white;
+            text-align:center;
+            padding:25px;
+        }
+
+        .content{
+            padding:30px;
+        }
+
+        .info{
+            background:#fafafa;
+            border-radius:8px;
+            padding:20px;
+            margin-top:20px;
+        }
+
+        .row{
+            margin:12px 0;
+        }
+
+        .label{
+            font-weight:bold;
+        }
+
+        .paid{
+            color:green;
+            font-weight:bold;
+        }
+
+        .footer{
+            text-align:center;
+            padding:20px;
+            color:#777;
+            font-size:14px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <h1>ePai</h1>
+
+        <h2>🎉 Order Confirmed</h2>
+
+    </div>
+
+    <div class="content">
+
+        <p>
+            Hi <b th:text="${customerName}"></b>,
+        </p>
+
+        <p>
+            Thank you for shopping with <b>ePai</b>.
+        </p>
+
+        <p>
+            Your payment has been received successfully.
+        </p>
+
+        <div class="info">
+
+            <div class="row">
+
+                <span class="label">Order ID :</span>
+
+                <span th:text="${orderId}"></span>
+
+            </div>
+
+            <div class="row">
+
+                <span class="label">Order Date :</span>
+
+                <span th:text="${orderDate}"></span>
+
+            </div>
+
+            <div class="row">
+
+                <span class="label">Total Amount :</span>
+
+                ₹<span th:text="${amount}"></span>
+
+            </div>
+
+            <div class="row">
+
+                <span class="label">Payment :</span>
+
+                <span class="paid">PAID</span>
+
+            </div>
+
+        </div>
+
+        <br>
+
+        <p>
+            We appreciate your purchase and hope to see you again.
+        </p>
+
+    </div>
+
+    <div class="footer">
+
+        Thank you for shopping on ePai ❤️
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

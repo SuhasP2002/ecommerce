@@ -2,6 +2,7 @@ package pai.suhas.ecommerce_backend.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pai.suhas.ecommerce_backend.dto.CreateProductRequest;
 import pai.suhas.ecommerce_backend.dto.ProductResponse;
@@ -22,6 +23,7 @@ public class ProductController
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ProductResponse createProduct(@Valid @RequestBody CreateProductRequest createProductRequest)
     {
         return productService.createProduct(createProductRequest);
@@ -44,11 +46,13 @@ public class ProductController
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ProductResponse updateProduct(@PathVariable Long id, @Valid @RequestBody CreateProductRequest request)
     {
         return productService.updateProduct(id,request);
     }
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deleteProduct(@PathVariable Long id)
     {
         productService.deleteProduct(id);

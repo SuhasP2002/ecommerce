@@ -11,6 +11,11 @@ public class Order
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private  String razorpayOrderId;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -23,6 +28,22 @@ public class Order
     private OrderStatus status;
 
     public Order() {
+    }
+
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public String getRazorpayOrderId() {
+        return razorpayOrderId;
+    }
+
+    public void setRazorpayOrderId(String razorpayOrderId) {
+        this.razorpayOrderId = razorpayOrderId;
     }
 
     public Long getId() {

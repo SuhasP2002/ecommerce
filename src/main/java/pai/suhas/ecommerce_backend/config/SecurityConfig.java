@@ -1,5 +1,8 @@
 package pai.suhas.ecommerce_backend.config;
 
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import pai.suhas.ecommerce_backend.security.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +16,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableMethodSecurity
+@EnableWebSecurity
 public class SecurityConfig
 {
     private final JwtFilter jwtFilter;
@@ -53,7 +58,11 @@ public class SecurityConfig
                                 "/reviews",
                                 "/reviews/**",
                                 "/addresses",
-                                "/addresses/**"
+                                "/addresses/**",
+                                "/upload",
+                                "/upload/**",
+                                "/payment/**",
+                                "/email/**"
                         )
                         .permitAll()
                         .anyRequest()
