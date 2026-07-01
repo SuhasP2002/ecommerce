@@ -107,7 +107,15 @@ public class ProductService
         response.setDescription(product.getDescription());
         response.setImageUrl(product.getImageUrl());
         response.setStockQuantity(product.getStockQuantity());
-        response.setCategoryName(product.getCategory().getName());
+
+        if (product.getCategory() != null)
+        {
+            response.setCategoryName(product.getCategory().getName());
+        }
+        else
+        {
+            response.setCategoryName("Uncategorized");
+        }
 
         return response;
     }

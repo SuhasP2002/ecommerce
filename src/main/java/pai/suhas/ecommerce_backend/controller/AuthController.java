@@ -8,6 +8,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 @RestController
@@ -26,13 +28,19 @@ public class AuthController
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest loginRequest)
+    public Map<String, String> login(@RequestBody LoginRequest loginRequest)
     {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword()));
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getEmail(),
+                        loginRequest.getPassword()));
 
         String token = jwtService.generateToken(loginRequest.getEmail());
 
-        return token;
+        Map<String, String> response = new HashMap<>();
+
+        response.put("token", token);
+
+        return response;
     }
 }
